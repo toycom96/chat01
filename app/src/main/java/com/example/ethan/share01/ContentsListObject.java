@@ -5,48 +5,55 @@ package com.example.ethan.share01;
  */
 public class ContentsListObject
 {
-    private int _id;
-    private int _user_id;
-    private String _picUrl;
-    private String _title;
+    private int mId;
+    private int mUserId;
+    private String mUser;
+    private String mPicUrl;
+    private String mTime;
+    private String mEtc;
+    private String mMsg;
 
-    public ContentsListObject(int Id, int user_id, String PicUrl, String Title)
+    public ContentsListObject(int Id, int UserId, String User, String PicUrl, String Time, String Etc, String Msg)
     {
-        this._id = Id;
-        this._user_id = user_id;
-        this._picUrl = PicUrl;
-        this._title = Title;
+        this.mId = Id;
+        this.mUserId = UserId;
+        this.mUser = User;
+        this.mPicUrl = PicUrl;
+        this.mTime = Time;
+        this.mEtc = Etc;
+        this.mMsg = Msg;
     }
 
+    public int getId() { return mId; }
+    public void setId(int Id) { this.mId = Id; }
 
-    public int get_user_id() {
-        return _user_id;
+    public int getUserId() { return mUserId; }
+    public void setUserId(int UserId) { this.mUserId = UserId; }
+
+    public String getUser() { return mUser; }
+    public void setUser(String User) {
+        this.mUser = User;
     }
 
-    public void set_user_id(int _user_id) {
-        this._user_id = _user_id;
-    }
     public String getPicUrl()
     {
-        return _picUrl;
+        return mPicUrl;
     }
+    public void setPicUrl(String PicUrl) { this.mPicUrl = PicUrl; }
 
-    public void setPicUrl(String PicUrl)
+    public String getTime()
     {
-        this._picUrl = PicUrl;
+        return mTime;
     }
-
-    public String getTitle()
+    public void setTime(String Time)
     {
-        return _title;
+        this.mTime = mTime;
     }
 
-    public void setTitle(String Title)
-    {
-        this._title = Title;
-    }
+    public String getEtc() { return mEtc; }
+    public void setEtc(String Etc) { this.mEtc = Etc; }
 
-    public void setId(int Id) { this._id = Id; }
+    public String getMsg() { return mMsg; }
+    public void setMsg(String Msg) { this.mMsg = Msg; }
 
-    public int getId() { return _id;}
 }

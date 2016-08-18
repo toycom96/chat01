@@ -17,6 +17,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by ethan on 16. 6. 16..
  */
@@ -35,12 +37,15 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
     @Override
     public void onBindViewHolder(ContentsListAdapter.ViewHolder holder, int position) {
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(476,0).into(holder.Pic);
-        Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(picWidth, 0).into(holder.Pic);
+        Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(picWidth, 0).into(holder.Photo);
         Toast.makeText(mContext, ContentsList.get(position).getPicUrl(), 1);
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).into(holder.Pic);
-        holder.Title.setText(ContentsList.get(position).getTitle());
+        holder.Time.setText(ContentsList.get(position).getTime());
+        holder.User.setText(ContentsList.get(position).getUser());
+        holder.Etc.setText(ContentsList.get(position).getEtc());
+        holder.Msg.setText(ContentsList.get(position).getMsg());
         holder.ContentId = ContentsList.get(position).getId();
-        holder.UserId = ContentsList.get(position).get_user_id();
+        holder.UserId = ContentsList.get(position).getUserId();
     }
 
     @Override
@@ -56,8 +61,11 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView Pic;
-        private TextView Title;
+        private ImageView Photo;
+        private TextView Time;
+        private TextView User;
+        private TextView Etc;
+        private TextView Msg;
         private int ContentId;
         private int UserId;
 
@@ -65,8 +73,11 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
             super(ContentView);
 
             ContentView.setOnClickListener(this);
-            Pic = (ImageView) ContentView.findViewById(R.id.ContentPic);
-            Title = (TextView) ContentView.findViewById(R.id.ContentTitle);
+            Photo = (ImageView) ContentView.findViewById(R.id.bbslist_photo);
+            Time = (TextView) ContentView.findViewById(R.id.bbslist_time);
+            User = (TextView) ContentView.findViewById(R.id.bbslist_user);
+            Etc = (TextView) ContentView.findViewById(R.id.bbslist_etc);
+            Msg = (TextView) ContentView.findViewById(R.id.bbslist_msg);
             ContentId = 0;
             UserId = 0;
         }

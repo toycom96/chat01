@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
          */
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        _sGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        _sGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(_sGridLayoutManager);
         mRecyclerView.addOnScrollListener(new ContentsListListener(this, _sGridLayoutManager, mRecyclerView, getApplicationContext()));
 
