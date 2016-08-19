@@ -20,7 +20,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_menu_noprofile" />
 
         <LinearLayout
