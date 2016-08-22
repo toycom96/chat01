@@ -1,5 +1,6 @@
 package com.example.ethan.share01;
 
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -43,28 +44,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-/**
- * Created by Lai.OH on 16. 7. 11..
- */
-public class BbsWriteActivity extends AppCompatActivity implements View.OnClickListener{
+public class BbsWrite extends AppCompatActivity {
 
     private EditText bbs_msg;
     private ImageView bbs_photo;
 
-    private Button bbswrite_button;
+    private Button photo_select;
+    private Button bbs_save;
 
-    private String getBbsMsg;
-    private String getBbsPhoto;
-
-    private String selectedImagePath;
+    private String getBbs_msg;
+    private String getBbs_photo_url;
+    private String selected_Image_path;
 
     public Bitmap user_photo_bm;
     public static RbPreference mPref;
     private final String getmy_url = "https://toycom96.iptime.org:1443/bbs_getmy";
-    private final String write_url = "https://toycom96.iptime.org:1443/user_write";
+    private final String write_url = "https://toycom96.iptime.org:1443/bbs_write";
     private static final int SELECT_PHOTO = 100;
-
-
 
 
     @Override
@@ -73,8 +69,10 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_bbs_write);
 
         init();
-
     }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -83,10 +81,10 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
         switch (requestCode) {
             case SELECT_PHOTO :
                 if (resultCode == RESULT_OK) {
-                    selectedImagePath = chooseImage.getRealPath();
-                    Log.e("selectedImagePath", selectedImagePath);
-                    user_photo_bm = BitmapFactory.decodeFile(selectedImagePath);
-                    user_photo.setImageBitmap(user_photo_bm);
+                    selected_Image_path = chooseImage.getRealPath();
+                    Log.e("selectedImagePath", selected_Image_path);
+                    user_photo_bm = BitmapFactory.decodeFile(selected_Image_path);
+                    bbs_photo.setImageBitmap(user_photo_bm);
                     UploadImageTask editInfo = new UploadImageTask();
                     editInfo.execute();
                     //Log.e("start","start");
@@ -102,21 +100,23 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void init(){
-        user_id = (EditText) findViewById(R.id.bbs_write_msg);
-        infoedit_button = (Button) findViewById(R.id.bbs_write_select);
-        user_photo = (ImageView) findViewById(R.id.bbs_write_photo);
+        bbs_msg = (EditText) findViewById(R.id.bbs_write_msg);
+        bbs_photo = (EditText) findViewById(R.id.bbs_write_photo);
 
-        infoedit_button.setOnClickListener(this);
-        user_photo.setOnClickListener(this);
+        photo_select = (Button) findViewById(R.id.bbs_write_select);
+        bbs_save = (Button) findViewById(R.id.bbs_write_button);
+
+        photo_select.setOnClickListener(this);
+        bbs_save.setOnClickListener(this);
 
         mPref = new RbPreference(UserInfoEditActivity.this);
-        GetUserInfoThread info = new GetUserInfoThread();
-        info.execute(info_url, mPref.getValue("auth", ""));
+        GetMyBbsThread info = new GetMyBbsThread();
+        info.execute(getmy_url, mPref.getValue("auth", ""));
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(UserInfoEditActivity.this, MainActivity.class);
+        Intent intent = new Intent(BbsWrite.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -125,13 +125,13 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         int viewId = v.getId();
         switch (viewId) {
-            case R.id.infoedit_button :
+            case R.id.bbs_write_button :
                 String getComent = user_coment.getText().toString();
                 EditUserInfoThread editInfo = new EditUserInfoThread();
                 editInfo.execute(edit_url,getComent,getPhotoPath);
                 break;
 
-            case R.id.infoedit_photo:
+            case R.id.bbs_write_button:
                 Intent photoPickerIntent = new Intent();
                 photoPickerIntent.setType("image/*");
                 photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -158,10 +158,10 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
             super.onPostExecute(s);
             dialog.dismiss();
             Log.e("response String before", s);
-            getPhotoPath = s;
+            getBbs_photo_url = s;
             //getPhotoPath = s.replace("[", "").replace("]", "");
 
-            Log.e("response String after", getPhotoPath);
+            Log.e("response String after", getBbs_photo_url);
             Toast.makeText(getApplicationContext(), "file uploaded",
                     Toast.LENGTH_LONG).show();
         }
@@ -253,16 +253,16 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
     /*
      * auth 값을 http header로 보내 사용자 정보를 받아오는 Thread
      */
-    class GetUserInfoThread extends AsyncTask<String, Void, Void> {
+    class GetMyBbsThread extends AsyncTask<String, Void, Void> {
 
         ProgressDialog loading;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(UserInfoEditActivity.this);
-            loading.setTitle("회원정보수정");
-            loading.setMessage("회원님의 정보를 받는 중이에요...");
+            loading = new ProgressDialog(BbsWrite.this);
+            loading.setTitle("게시판 글쓰기");
+            loading.setMessage("회원님의 이전 글을 조회 중이에요...");
             loading.setCancelable(false);
             loading.show();
             //loading = ProgressDialog.show(SignupActivity.this, "회원가입 중...", null,true,true);
@@ -274,7 +274,6 @@ public class BbsWriteActivity extends AppCompatActivity implements View.OnClickL
 
             //Toast.makeText(UserInfoEditActivity.this, "정보 확인", Toast.LENGTH_SHORT).show();
 
-            user_id.setText(mPref.getValue("user_id", ""));
             user_nick.setText(getUserNick);
             user_age.setText(getUserAge);
             user_coment.setText(getUserComent);
