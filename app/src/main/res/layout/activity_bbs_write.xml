@@ -95,7 +95,7 @@
             android:scrollHorizontally="true"/>
 
         <Button
-            android:id="@+id/bbs_write_button"
+            android:id="@+id/bbs_write_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"

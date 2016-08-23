@@ -44,7 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class BbsWrite extends AppCompatActivity {
+public class BbsWrite extends AppCompatActivity implements View.OnClickListener {
 
     private EditText bbs_msg;
     private ImageView bbs_photo;
@@ -101,15 +101,15 @@ public class BbsWrite extends AppCompatActivity {
 
     private void init(){
         bbs_msg = (EditText) findViewById(R.id.bbs_write_msg);
-        bbs_photo = (EditText) findViewById(R.id.bbs_write_photo);
+        bbs_photo = (ImageView) findViewById(R.id.bbs_write_photo);
 
         photo_select = (Button) findViewById(R.id.bbs_write_select);
-        bbs_save = (Button) findViewById(R.id.bbs_write_button);
+        bbs_save = (Button) findViewById(R.id.bbs_write_save);
 
         photo_select.setOnClickListener(this);
         bbs_save.setOnClickListener(this);
 
-        mPref = new RbPreference(UserInfoEditActivity.this);
+        mPref = new RbPreference(BbsWrite.this);
         GetMyBbsThread info = new GetMyBbsThread();
         info.execute(getmy_url, mPref.getValue("auth", ""));
     }
@@ -125,13 +125,13 @@ public class BbsWrite extends AppCompatActivity {
     public void onClick(View v) {
         int viewId = v.getId();
         switch (viewId) {
-            case R.id.bbs_write_button :
-                String getComent = user_coment.getText().toString();
-                EditUserInfoThread editInfo = new EditUserInfoThread();
-                editInfo.execute(edit_url,getComent,getPhotoPath);
+            case R.id.bbs_write_save :
+                String getComent = bbs_msg.getText().toString();
+                BbsWriteThread editInfo = new BbsWriteThread();
+                editInfo.execute(write_url,getComent,selected_Image_path);
                 break;
 
-            case R.id.bbs_write_button:
+            case R.id.bbs_write_select:
                 Intent photoPickerIntent = new Intent();
                 photoPickerIntent.setType("image/*");
                 photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -145,7 +145,7 @@ public class BbsWrite extends AppCompatActivity {
     class UploadImageTask extends AsyncTask<Void, Void, String> {
         private String webAddressToPost = "https://toycom96.iptime.org:1443/up_file";
 
-        private ProgressDialog dialog = new ProgressDialog(UserInfoEditActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(BbsWrite.this);
 
         @Override
         protected void onPreExecute() {
@@ -274,17 +274,15 @@ public class BbsWrite extends AppCompatActivity {
 
             //Toast.makeText(UserInfoEditActivity.this, "정보 확인", Toast.LENGTH_SHORT).show();
 
-            user_nick.setText(getUserNick);
-            user_age.setText(getUserAge);
-            user_coment.setText(getUserComent);
-            if (getUserPhoto != null || !getUserPhoto.equals("")) {
+            bbs_msg.setText(getBbs_msg);
+            if (getBbs_photo_url != null || !getBbs_photo_url.equals("")) {
                 try {
-                    Picasso.with(getApplicationContext()).load(getUserPhoto).error(R.drawable.ic_menu_noprofile).into(user_photo);
+                    Picasso.with(getApplicationContext()).load(getBbs_photo_url).error(R.drawable.ic_menu_noprofile).into(bbs_photo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else{
-                user_photo.setImageResource(R.drawable.ic_menu_noprofile);
+                bbs_photo.setImageResource(R.drawable.ic_menu_noprofile);
             }
 
             loading.dismiss();
@@ -355,15 +353,11 @@ public class BbsWrite extends AppCompatActivity {
                     Log.i("Response Data", response);
                     JSONObject responseJSON = new JSONObject(response);
                     //JSONObject를 생성해 key값 설정으로 result값을 받음.
-                    Log.i("Response Nick Value", responseJSON.get("Name").toString());
-                    Log.i("Response Age Value", responseJSON.get("Age").toString());
                     Log.i("Response Age Value", responseJSON.get("Msg").toString());
-                    Log.i("Response Age Value", responseJSON.get("Photo").toString());
+                    Log.i("Response Age Value", responseJSON.get("Media").toString());
 
-                    getUserNick = responseJSON.get("Name").toString();
-                    getUserAge = responseJSON.get("Age").toString();
-                    getUserComent = responseJSON.get("Msg").toString();
-                    getUserPhoto = responseJSON.get("Photo").toString();
+                    getBbs_msg = responseJSON.get("Msg").toString();
+                    getBbs_photo_url = responseJSON.get("Media").toString();
                 }else {
                     Log.e("HTTP_ERROR", "NOT CONNECTED HTTP");
                 }
@@ -378,13 +372,13 @@ public class BbsWrite extends AppCompatActivity {
     /*
      * 사용자 정보 수정 완료 Thread
      */
-    class EditUserInfoThread extends AsyncTask<String, Void, Void> {
+    class BbsWriteThread extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(UserInfoEditActivity.this, "정보수정 완료", Toast.LENGTH_SHORT).show();
-            mPref.put("user_nick", user_nick.getText().toString());
-            Intent intent = new Intent(UserInfoEditActivity.this, MainActivity.class);
+            Toast.makeText(BbsWrite.this, "게시글 저장 완료", Toast.LENGTH_SHORT).show();
+            //mPref.put("user_nick", user_nick.getText().toString());
+            Intent intent = new Intent(BbsWrite.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
