@@ -60,7 +60,7 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     public static RbPreference mPref;
     private final String getmy_url = "https://toycom96.iptime.org:1443/bbs_getmy";
     private final String write_url = "https://toycom96.iptime.org:1443/bbs_write";
-    private static final int SELECT_PHOTO = 100;
+    private static final int GET_PICTURE_URI = 101;
 
 
     @Override
@@ -76,24 +76,23 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ImageChooseUtil chooseImage = new ImageChooseUtil(data, getApplicationContext());
+        //ImageChooseUtil chooseImage = new ImageChooseUtil(data, getApplicationContext());
 
         switch (requestCode) {
-            case SELECT_PHOTO :
+            case GET_PICTURE_URI :
                 if (resultCode == RESULT_OK) {
-                    selected_Image_path = chooseImage.getRealPath();
-                    Log.e("selectedImagePath", selected_Image_path);
-                    user_photo_bm = BitmapFactory.decodeFile(selected_Image_path);
+
+                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                    Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    user_photo_bm = BitmapFactory.decodeFile(picturePath);
                     bbs_photo.setImageBitmap(user_photo_bm);
-                    UploadImageTask editInfo = new UploadImageTask();
-                    editInfo.execute();
-                    //Log.e("start","start");
-                    //chooseImage.uploadImage(bm);
-                    //SystemClock.sleep(3000);
-                    //Log.e("end","end");
-                    //Log.e("image",mPref.getValue("imagefile","Ssss"));
-                    //user_photo.setImageURI(selectedImage);
-                    //Log.e("ImageURI", selectedImage.toString());
                 }
         }
     }
@@ -132,10 +131,12 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
                 break;
 
             case R.id.bbs_write_select:
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(photoPickerIntent,"Select Picture"), SELECT_PHOTO);
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GET_PICTURE_URI);
+
                 break;
         }
     }
@@ -191,7 +192,7 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
                 entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 
                 bos = new ByteArrayOutputStream();
-                user_photo_bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                user_photo_bm.compress(Bitmap.CompressFormat.JPEG, 85, bos);
                 byte[] data = bos.toByteArray();
                 bab = new ByteArrayBody(data, "test.jpg");
                 entity.addPart("imgfiles", bab);
