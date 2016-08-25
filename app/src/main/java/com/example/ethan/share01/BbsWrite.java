@@ -1,8 +1,10 @@
 package com.example.ethan.share01;
 
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +46,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+
 
 
 public class BbsWrite extends AppCompatActivity implements View.OnClickListener {
@@ -61,6 +67,13 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     private final String getmy_url = "https://toycom96.iptime.org:1443/bbs_getmy";
     private final String write_url = "https://toycom96.iptime.org:1443/bbs_write";
     private static final int GET_PICTURE_URI = 101;
+
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
     @Override
@@ -88,11 +101,14 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
                     cursor.moveToFirst();
 
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String picturePath = cursor.getString(columnIndex);
+                    selected_Image_path = cursor.getString(columnIndex);
                     cursor.close();
 
-                    user_photo_bm = BitmapFactory.decodeFile(picturePath);
-                    bbs_photo.setImageBitmap(user_photo_bm);
+                    user_photo_bm = BitmapFactory.decodeFile(selected_Image_path);
+                    //bbs_photo.setImageBitmap(user_photo_bm);
+
+                    UploadBbsImgTask bbs_photo_upload = new UploadBbsImgTask();
+                    bbs_photo_upload.execute();
                 }
         }
     }
@@ -126,11 +142,18 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
         switch (viewId) {
             case R.id.bbs_write_save :
                 String getComent = bbs_msg.getText().toString();
-                BbsWriteThread editInfo = new BbsWriteThread();
-                editInfo.execute(write_url,getComent,selected_Image_path);
+                BbsWriteThread bbs_save_thrd = new BbsWriteThread();
+                bbs_save_thrd.execute(write_url, getComent, getBbs_photo_url);
                 break;
 
             case R.id.bbs_write_select:
+
+                int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    // We don't have permission so prompt the user
+                    ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE );
+                }
 
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
@@ -143,7 +166,7 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
 
 
     //이미지 파일 올리는 쓰레드
-    class UploadImageTask extends AsyncTask<Void, Void, String> {
+    class UploadBbsImgTask extends AsyncTask<Void, Void, String> {
         private String webAddressToPost = "https://toycom96.iptime.org:1443/up_file";
 
         private ProgressDialog dialog = new ProgressDialog(BbsWrite.this);
@@ -158,13 +181,25 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            Log.e("response String before", s);
+            //Log.e("response String before", s);
             getBbs_photo_url = s;
             //getPhotoPath = s.replace("[", "").replace("]", "");
 
             Log.e("response String after", getBbs_photo_url);
             Toast.makeText(getApplicationContext(), "file uploaded",
                     Toast.LENGTH_LONG).show();
+
+
+            if (getBbs_photo_url != null && !getBbs_photo_url.equals("")) {
+                try {
+                    //Picasso.with(getApplicationContext()).load(getBbs_photo_url).error(R.drawable.ic_menu_noprofile).into(bbs_photo);
+                    Picasso.with(getApplicationContext()).load(getBbs_photo_url).resize(640, 0).into(bbs_photo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else{
+                bbs_photo.setImageResource(R.drawable.ic_menu_noprofile);
+            }
         }
 
         @Override
@@ -191,11 +226,25 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
 
                 entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-                bos = new ByteArrayOutputStream();
+
+                //File file = new File(selected_Image_path);
+                //byte[] fileData = new byte[(int) file.length()];
+
+                FileInputStream fis = new FileInputStream(selected_Image_path);
+                byte[] fileData = new byte[(int) fis.available()];
+                DataInputStream dis = new DataInputStream(fis);
+                dis.readFully(fileData);
+                dis.close();
+                bab = new ByteArrayBody(fileData, "bbsimg.jpg");
+                entity.addPart("imgfiles", bab);
+                fis.close();
+
+
+                /*bos = new ByteArrayOutputStream();
                 user_photo_bm.compress(Bitmap.CompressFormat.JPEG, 85, bos);
                 byte[] data = bos.toByteArray();
-                bab = new ByteArrayBody(data, "test.jpg");
-                entity.addPart("imgfiles", bab);
+                bab = new ByteArrayBody(data, "bbsimg.jpg");
+                entity.addPart("imgfiles", bab);*/
 
 
                 conn.addRequestProperty("Content-length", entity.getContentLength() + "");
@@ -276,7 +325,7 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
             //Toast.makeText(UserInfoEditActivity.this, "정보 확인", Toast.LENGTH_SHORT).show();
 
             bbs_msg.setText(getBbs_msg);
-            if (getBbs_photo_url != null || !getBbs_photo_url.equals("")) {
+            if (getBbs_photo_url != null && !getBbs_photo_url.equals("")) {
                 try {
                     Picasso.with(getApplicationContext()).load(getBbs_photo_url).error(R.drawable.ic_menu_noprofile).into(bbs_photo);
                 } catch (Exception e) {
@@ -425,7 +474,7 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
                 JSONObject job = new JSONObject();
                 //JSONObject 생성 후 input
                 job.put("msg", user_coment);
-                job.put("photo", user_photo);
+                job.put("media", user_photo);
 
                 os = conn.getOutputStream();
                 //Output Stream 생성
