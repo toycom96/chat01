@@ -2,7 +2,9 @@ package com.example.ethan.share01;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,7 +40,7 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
     public void onBindViewHolder(ContentsListAdapter.ViewHolder holder, int position) {
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(476,0).into(holder.Pic);
         if (ContentsList.get(position).getPicUrl() != null && !ContentsList.get(position).getPicUrl().equals("")) {
-            Toast.makeText(mContext, ContentsList.get(position).getPicUrl(), 5);
+            Toast.makeText(mContext, ContentsList.get(position).getPicUrl(), Toast.LENGTH_SHORT);
             Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(picWidth, 0).into(holder.Photo);
         } else {
             holder.Photo.setMaxWidth(0);
@@ -91,20 +93,30 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
         @Override
         public void onClick(View ContentView)
         {
-            /*Toast.makeText(ContentView.getContext(), "Clicked ContentId = " + ContentId + " " + UserId, Toast.LENGTH_SHORT).show();
-            Context context = ContentView.getContext();
-            Intent intent = new Intent(context, ContentDetailActivity.class);
-            intent.putExtra("user_num", UserId);
-            context.startActivity(intent);*/
+            //클릭했을 때의 해당 화면의 context를 받아온다.
+            final Context context = ContentView.getContext();
 
-            //ViewHolder.this.UserId
-            //Toast.makeText(ContentView.getContext(), "Clicked ContentId = " + ContentId + " " + ViewHolder.this.UserId, Toast.LENGTH_SHORT).show();
-            Context context = ContentView.getContext();
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("sender_id", ViewHolder.this.UserId);
-            context.startActivity(intent);
-            ((Activity)context).finish();
-            Log.e("Adapter Context", context.toString());
+            //쪽지 보내기 Dialog 생성, 상대방의 정보를 같이 보낸다.
+            //쪽지를 보내는 버튼에 대한 이벤트는 MessageDialogUtil 클래스 내부에 구현되어 있다.
+            final MessageDialogUtil messageUtil =
+                    new MessageDialogUtil(context, ViewHolder.this.User.getText().toString(), ViewHolder.this.Etc.getText().toString(), ViewHolder.this.Msg.getText().toString(), ViewHolder.this.UserId);
+
+            //쪽지 보내기 Dialog가 화면에 보여졌을 때의 기본 셋팅
+            messageUtil.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    messageUtil.setTitle();
+                }
+            });
+
+            messageUtil.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    return;
+                }
+            });
+
+            messageUtil.show();
 
         }
     }
