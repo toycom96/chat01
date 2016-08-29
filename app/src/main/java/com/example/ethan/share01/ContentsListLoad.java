@@ -30,11 +30,28 @@ public class ContentsListLoad {
     static ContentsListAdapter mAdapter;
     private String mDistFlag = "0";
     private final Lock _mutex = new ReentrantLock(true);
+    private GpsInfo mGps;
+    private double mLat;
+    private double mLon;
 
 
-    public ContentsListLoad (List<ContentsListObject> ContentItem, ContentsListAdapter ListAdapter) {
+    public ContentsListLoad (List<ContentsListObject> ContentItem, ContentsListAdapter ListAdapter, GpsInfo gps) {
         this.mContentItem = ContentItem;
         this.mAdapter = ListAdapter;
+        this.mGps = gps;
+
+        mGps.GpsInfoRefresh();
+        // GPS 사용유무 가져오기
+        if (mGps.isGetLocation()) {
+
+            mLat = mGps.getLatitude();
+            mLon = mGps.getLongitude();
+
+        } else {
+            // GPS 를 사용할수 없으므로
+            mGps.showSettingsAlert();
+        }
+
     }
 
     public int loadFromApi(int ListIndex, int dist_flag, String auth, RecyclerView recyclerView, Context context) {
@@ -97,8 +114,8 @@ public class ContentsListLoad {
                 conn.setDoInput(true);
 
                 JSONObject job = new JSONObject();
-                job.put("long", 126.7459979);
-                job.put("lat", 37.259485);
+                job.put("long", mLon);
+                job.put("lat", mLat);
                 job.put("dist", Integer.parseInt(value[1]));
                 job.put("lidx", Integer.parseInt(value[0]));
 

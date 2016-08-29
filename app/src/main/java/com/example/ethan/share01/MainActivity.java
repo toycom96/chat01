@@ -1,11 +1,14 @@
 package com.example.ethan.share01;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     public ContentsListAdapter mAdapter;
     public ContentsListLoad mContentsLoader;
     //public static Context mContext;
+    public GpsInfo mGps;
 
     RecyclerView mRecyclerView;
 
@@ -65,12 +69,26 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        mGps = new GpsInfo(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 Intent intent = new Intent(MainActivity.this, BbsWrite.class);
+
+                //intent.putExtra("OBJECT", MainActivity.this.mGps);
+                if (mGps.isGetLocation()) {
+                    intent.putExtra("Lat", mGps.getLatitude());
+                    intent.putExtra("Lon", mGps.getLongitude());
+                } else {
+                    // GPS 를 사용할수 없으므로
+                    mGps.showSettingsAlert();
+                }
                 startActivity(intent);
                 finish();
             }
@@ -119,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.addOnScrollListener(new ContentsListListener(this, _sGridLayoutManager, mRecyclerView, getApplicationContext()));
 
 
-        mContentsLoader = new ContentsListLoad(mContentsList, mAdapter);
+        mContentsLoader = new ContentsListLoad(mContentsList, mAdapter, mGps);
         mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
 
         //회원가입 유무 확인
@@ -206,6 +224,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.time_share) {
             mContentsLoader.loadFromApi(0, 5, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
         } else if (id == R.id.talent_share) {
+            //mContentsLoader = new ContentsListLoad(mContentsList, mAdapter);
             mContentsLoader.loadFromApi(0, 30, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
         } else if (id == R.id.goods_share) {
             mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
