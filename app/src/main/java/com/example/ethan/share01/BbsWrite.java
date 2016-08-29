@@ -55,6 +55,9 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     private EditText bbs_msg;
     private ImageView bbs_photo;
 
+    private double mLat;
+    private double mLon;
+
     private Button photo_select;
     private Button bbs_save;
 
@@ -80,6 +83,14 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_write);
+
+        Intent intent = getIntent();
+        mLat = intent.getDoubleExtra("Lat", 0.0);
+        mLon = intent.getDoubleExtra("Lon", 0.0);
+
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }*/
 
         init();
     }
@@ -140,7 +151,8 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         int viewId = v.getId();
         switch (viewId) {
-            case R.id.bbs_write_save :
+            case R.id.bbs_write_save:
+
                 String getComent = bbs_msg.getText().toString();
                 BbsWriteThread bbs_save_thrd = new BbsWriteThread();
                 bbs_save_thrd.execute(write_url, getComent, getBbs_photo_url);
@@ -272,6 +284,11 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            entity = null;
+            conn = null;
+            bab = null;
+
             return null;
         }
 
@@ -475,6 +492,8 @@ public class BbsWrite extends AppCompatActivity implements View.OnClickListener 
                 //JSONObject 생성 후 input
                 job.put("msg", user_coment);
                 job.put("media", user_photo);
+                job.put("lat", mLat);
+                job.put("long", mLon);
 
                 os = conn.getOutputStream();
                 //Output Stream 생성
