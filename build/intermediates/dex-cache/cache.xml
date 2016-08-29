@@ -1,3 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-23.4.0_28e6cfba0c8736ceb89346cb2267f62458329ba9.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\cardview-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-cardview-v7-23.4.0_49441f9bd763c3deddce5357d49df41164ad691b.jar" />
+    </item>
+    <item
+        jar="C:\Users\OHRok\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpmime\4.2.3\118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1\httpmime-4.2.3.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="118ae1bc7f3aeeddfe564f0edfd79c11d09d17d1">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\httpmime-4.2.3_76f13515affcf21b1759509a460b71e204f86d8b.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.4.0_992118c5d2ff53b61290b98fec27c3cdfbd50d36.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\internal_impl-23.4.0_5718915fca096e12a2d3de1bdd75679e32def88f.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\de.hdodenhof\circleimageview\1.2.1\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="4b868b833b0887aa48c4e581558eef4f1196f6a2">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\de.hdodenhof-circleimageview-1.2.1_53b76676c5d1c8fe3fe258da84daff3e5060041f.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.4.0_82e2a13ddf98f7f293c9997600cc85d5cb247fc6.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="2f77034b708d41a4e2580265178ef4b99510a384">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_cf5240e4f90e142d4122ee7e42feec307c03d1d0.jar" />
+    </item>
+    <item
+        jar="C:\Users\OHRok\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.2.2\b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd\httpcore-4.2.2.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\httpcore-4.2.2_92e3c07f2c202ef2165e1535b73bd0ff7e75464c.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-design-23.4.0_5c8866c6534963e94070b8de448a77c589809983.jar" />
+    </item>
+    <item
+        jar="C:\Users\OHRok\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\support-annotations-23.4.0_e262fffbc63bf6e5627a87cfe31f478612143040.jar" />
+    </item>
+    <item
+        jar="C:\Users\OHRok\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\picasso-2.5.2_340180c515a9d42a8bcbfe5abd45c65e620e73c3.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="f4d3d61bd9ac7bcc8fa540c76d2a07243bd6b66a">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\instant-run_61e67d36a6422b14c503d4f4e615167d168ff7f0.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-23.4.0_65418d942ebee7f026a53b2e4b806ac59d25bb21.jar" />
+    </item>
+    <item
+        jar="D:\SourceTree\projectChat01\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="D:\SourceTree\projectChat01\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.4.0_6bd9dd40d547e724565da889a3d3774125de849a.jar" />
+    </item>
+
+</items>

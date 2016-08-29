@@ -2,22 +2,31 @@ package com.example.ethan.share01;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 /**
  * Created by Lai.OH on 2016-08-29.
+ *
+ * 쪽지보내는 Dialog를 생성하는 클래스
+ *
+ * MessageDialogUtil(param...)
+ *
+ * @param... context    (해당 위치의 context)
+ * @param... recvName   (게시글을 올린 사람의 이름)
+ * @param... recvSex    (게시글을 올린 사람의 성별)
+ * @param... recvMsg    (게시글을 올린 사람에게 보낼 메세지)
+ * @param... recvId     (게시글을 올린 사람의 id)
+ *
+ * ContentListAdapter 클래스 내부에서 해당 게시글 클릭 이벤트 발생시
+ * 해당 게시글을 올린 user의 정보를 받아온다.
+ * 보내기 버튼 클릭시 상대방에게 보낼 메세지를 보낸다.
+ * 메세지를 보내는 쓰레드는 MessageSendUtil 클래스를 호출한다.
+ *
  */
 public class MessageDialogUtil extends Dialog{
     private Context mContext;
