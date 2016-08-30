@@ -132,13 +132,15 @@ public class MainActivity extends AppCompatActivity
          */
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
         _sGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(_sGridLayoutManager);
         mRecyclerView.addOnScrollListener(new ContentsListListener(this, _sGridLayoutManager, mRecyclerView, getApplicationContext()));
-
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
 
         mContentsLoader = new ContentsListLoad(mContentsList, mAdapter, mGps);
-        mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
+        mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, this);
 
         //회원가입 유무 확인
         checkForLogin();
@@ -222,12 +224,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.time_share) {
-            mContentsLoader.loadFromApi(0, 5, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
+            mContentsLoader.loadFromApi(0, 5, mPref.getValue("auth",""), mRecyclerView, this);
         } else if (id == R.id.talent_share) {
             //mContentsLoader = new ContentsListLoad(mContentsList, mAdapter);
-            mContentsLoader.loadFromApi(0, 30, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
+            mContentsLoader.loadFromApi(0, 30, mPref.getValue("auth",""), mRecyclerView, this);
         } else if (id == R.id.goods_share) {
-            mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, getApplicationContext());
+            mContentsLoader.loadFromApi(0, 0, mPref.getValue("auth",""), mRecyclerView, this);
 
         } else if (id == R.id.setting) {
 

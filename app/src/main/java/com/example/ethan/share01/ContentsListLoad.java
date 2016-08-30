@@ -1,9 +1,11 @@
 package com.example.ethan.share01;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,12 +74,26 @@ public class ContentsListLoad {
         public ContentsListAdapter mAdapter;
         private RecyclerView mRecyclerView;
         private  Context mContext;
+        private StaggeredGridLayoutManager _sGridLayoutManager;
+        private MainActivity activity;
+        ProgressDialog loading;
 
         public getBbsList (List<ContentsListObject> ContentItem, ContentsListAdapter ListAdapter,RecyclerView recyclerView, Context context) {
             this.mContentItem = ContentItem;
             this.mAdapter = ListAdapter;
             this.mRecyclerView = recyclerView;
             this.mContext = context;
+            //this.activity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(mContext);
+            loading.setTitle("게시글 받아오는중");
+            loading.setMessage("조금만 기다려 주세요~~");
+            loading.setCancelable(false);
+            loading.show();
         }
 
         protected void onPostExecute(Void aVoid) {
@@ -85,8 +101,20 @@ public class ContentsListLoad {
             /*
              * doInBackground에서 모든 데이터를 add한 뒤 adapter에 연결 후 recyclerView에 뿌려준다.
              */
-            mAdapter = new ContentsListAdapter(mContext, mContentItem);
-            mRecyclerView.setAdapter(mAdapter);
+            Log.e("ContentLoadTask", "onPostExecute");
+            Log.e("mContentItem", mContentItem.toString());
+            if (mRecyclerView != null) {
+                mAdapter = new ContentsListAdapter(mContext, mContentItem);
+                mRecyclerView.setAdapter(mAdapter);
+                _sGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+                mRecyclerView.setLayoutManager(_sGridLayoutManager);
+                loading.dismiss();
+                loading = null;
+            } else {
+                Log.e("recyclerView", "null");
+            }
+
+
 
         }
 
@@ -161,6 +189,7 @@ public class ContentsListLoad {
 
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject order = ja.getJSONObject(i);
+                    Log.e("ID", order.getString("User_name"));
                     this.mContentItem.add(new ContentsListObject(order.getInt("Id"), order.getInt("User_id"), order.getString("User_name"), order.getString("Media"), order.getString("Term"), "ETC",order.getString("Msg")));
 
                 }
