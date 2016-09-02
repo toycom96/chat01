@@ -28,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     public ContentsListLoad mContentsLoader;
     //public static Context mContext;
     public GpsInfo mGps;
+    public String mGcmRegId;
 
     RecyclerView mRecyclerView;
 
@@ -73,6 +76,12 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         mGps = new GpsInfo(this);
+        mGcmRegId = mPref.getValue("gcm_reg_id","");
+        if (mGcmRegId == null || mGcmRegId.equals("")) {
+            GcmRegThread GcmRegObj = new GcmRegThread();
+            GcmRegObj.start();
+        }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -178,7 +187,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (getLoginCheck.equals("login")){
             //현재 로그인 되어있는 경우
-            new CreateAuthUtil(getApplicationContext()).execute(mPref.getValue("user_num", ""), mPref.getValue("device_id", ""));
+            new CreateAuthUtil(getApplicationContext()).execute(mPref.getValue("user_num", ""), mPref.getValue("device_id", ""), mPref.getValue("gcm_reg_id", ""));
             user_login_tv.setText(mPref.getValue("user_id", ""));
             user_nick_tv.setText(mPref.getValue("user_nick", ""));
         }
@@ -333,5 +342,20 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    class GcmRegThread extends Thread {
+        public void run() {
+            try {
+                GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                //String regId = gcm.register("chat01-140505");
+                String regId = gcm.register("1028702649415");
+
+                mPref.put("gcm_reg_id",regId);
+                mGcmRegId = regId;
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

@@ -174,7 +174,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 mPref.put("login","login");
 
                 CreateAuthUtil auth = new CreateAuthUtil(getApplicationContext());
-                auth.execute(getUserNum ,getUserDeviceId);
+                auth.execute(getUserNum ,getUserDeviceId, mPref.getValue("gcm_reg_id",""));
 
                 loading.dismiss();
 

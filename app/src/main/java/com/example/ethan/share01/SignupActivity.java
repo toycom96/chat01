@@ -223,7 +223,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 mPref.put("login","login");
                 Log.e("UserID", mPref.getValue("user_id",""));
                 CreateAuthUtil auth = new CreateAuthUtil(getApplicationContext());
-                auth.execute(mPref.getValue("user_num",""),getUserDeviceId);
+                auth.execute(mPref.getValue("user_num",""),getUserDeviceId, mPref.getValue("gcm_reg_id",""));
                 loading.dismiss();
             } else {
                 Toast.makeText(SignupActivity.this, "회원가입중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();

@@ -48,8 +48,11 @@ class CreateAuthUtil extends AsyncTask<String, Void, Void> {
              */
         int user_num = Integer.parseInt(value[0]);
         String user_device_id = value[1];
+        String gcm_reg_id = value[2];
+
         Log.e("user_num", String.valueOf(user_num));
         Log.e("userDevice", user_device_id);
+        Log.e("gcm_id", gcm_reg_id);
 
 
         try {
@@ -79,6 +82,7 @@ class CreateAuthUtil extends AsyncTask<String, Void, Void> {
             //JSONObject 생성 후 input
             job.put("id", user_num);
             job.put("device_id", user_device_id);
+            job.put("gcm_id", gcm_reg_id);
 
             os = conn.getOutputStream();
             //Output Stream 생성
