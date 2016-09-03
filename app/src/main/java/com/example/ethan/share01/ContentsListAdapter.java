@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -43,6 +44,9 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
 
     @Override
     public void onBindViewHolder(ContentsListAdapter.ViewHolder holder, int position) {
+        int unix_sec = 0;
+        String getTime;
+
         Log.e("onBindViewHolder", "onBindViewHolder");
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(476,0).into(holder.Pic);
         if (ContentsList.get(position).getPicUrl() != null && !ContentsList.get(position).getPicUrl().equals("")) {
@@ -54,12 +58,30 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(picWidth, 0).into(holder.Photo);
         Toast.makeText(mContext, ContentsList.get(position).getPicUrl(), 1);
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).into(holder.Pic);
-        holder.Time.setText(ContentsList.get(position).getTime());
         holder.User.setText(ContentsList.get(position).getUser());
-        holder.Etc.setText(ContentsList.get(position).getEtc());
+
         holder.Msg.setText(ContentsList.get(position).getMsg());
         holder.ContentId = ContentsList.get(position).getId();
         holder.UserId = ContentsList.get(position).getUserId();
+        unix_sec = ContentsList.get(position).getTime();
+
+        if ( unix_sec > (6 * 30 * 24 * 60 * 60) ) { getTime = "반년이상"; }
+        else if ( unix_sec > ( 30 * 24 * 60 * 60) ) { getTime = (unix_sec / ( 30 * 24 * 60 * 60)) + "개월전"; }
+        else if ( unix_sec > ( 24 * 60 * 60) ) { getTime = (unix_sec / ( 24 * 60 * 60)) + "일전"; }
+        else if ( unix_sec > ( 60 * 60) ) { getTime = (unix_sec / ( 60 * 60)) + "시간전"; }
+        else if ( unix_sec > ( 60) ) { getTime = (unix_sec / (60)) + "분전"; }
+        else { getTime = unix_sec + "초전"; }
+        //getTime = order.get("Sended").toString();
+        holder.Time.setText(getTime);
+
+        if (ContentsList.get(position).getSex().equals("M")) {
+            holder.User.setTextColor(Color.parseColor("#0000FF"));
+            holder.Etc.setText("남 " + String.valueOf(ContentsList.get(position).getAge()) + "세  " + String.valueOf(ContentsList.get(position).getDist()) + " km 이내");
+        } else {
+            holder.User.setTextColor(Color.parseColor("#FF0000"));
+            holder.Etc.setText("여 " + String.valueOf(ContentsList.get(position).getAge()) + "세  " + String.valueOf(ContentsList.get(position).getDist()) + " km 이내");
+        }
+
     }
 
     @Override

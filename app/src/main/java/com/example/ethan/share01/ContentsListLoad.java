@@ -190,7 +190,7 @@ public class ContentsListLoad {
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject order = ja.getJSONObject(i);
                     Log.e("ID", order.getString("User_name"));
-                    this.mContentItem.add(new ContentsListObject(order.getInt("Id"), order.getInt("User_id"), order.getString("User_name"), order.getString("Media"), order.getString("Term"), "ETC",order.getString("Msg")));
+                    this.mContentItem.add(new ContentsListObject(order.getInt("Id"), order.getInt("User_id"), order.getString("User_name"), order.getString("Media"), order.getString("Term"), "ETC",order.getString("Msg"), order.getString("User_sex"), order.getInt("User_age"), order.getInt("Dist")));
 
                 }
             } catch (Exception e) {

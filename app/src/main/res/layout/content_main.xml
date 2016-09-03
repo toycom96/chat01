@@ -36,8 +36,9 @@
                     android:id="@+id/bbslist_time"
                     android:layout_width="48dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="right"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left"
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:text="10주전"/>
@@ -53,7 +54,7 @@
                     android:text="상대방 이름"/>
                 <TextView
                     android:id="@+id/bbslist_etc"
-                    android:layout_width="56dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
@@ -67,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginLeft="1dp"
+                android:layout_marginLeft="10dp"
                 android:textSize="14sp"
                 android:gravity="left"
                 android:maxLines="10"

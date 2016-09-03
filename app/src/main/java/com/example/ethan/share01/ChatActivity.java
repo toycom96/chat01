@@ -40,7 +40,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private int mGetSendId;
-    private String mGetChatRoomId;
+    private int mGetChatRoomId = -1;
 
     private RbPreference mPref = new RbPreference(ChatActivity.this);
 
@@ -53,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         init();
     }
 
+
     private void init() {
         chat_listview = (ListView) findViewById(R.id.chat_listview);
         message_edt = (EditText) findViewById(R.id.chat_message_edt);
@@ -64,17 +65,17 @@ public class ChatActivity extends AppCompatActivity {
         /*
          * 새로운 채팅 확인해보기
          */
-        int getChatRoomId = getIntent().getIntExtra("room_id", -1);
+        mGetChatRoomId = getIntent().getIntExtra("room_id", -1);
         mGetSendId = getIntent().getIntExtra("sender_id", -1);
-        Log.e("room_id", String.valueOf(getChatRoomId));
+        Log.e("room_id", String.valueOf(mGetChatRoomId));
         Log.e("sender_id", String.valueOf(mGetSendId));
-        switch (getChatRoomId) {
+        switch (mGetChatRoomId) {
             case -1 :
                 Toast.makeText(getApplicationContext(), "새로운 채팅", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 QueryMessageThread query = new QueryMessageThread();
-                query.execute(SERVER_URL_QUERY, String.valueOf(getChatRoomId), mPref.getValue("auth", ""));
+                query.execute(SERVER_URL_QUERY, String.valueOf(mGetChatRoomId), mPref.getValue("auth", ""));
         }
 
         send_btn.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +205,7 @@ public class ChatActivity extends AppCompatActivity {
                         JSONObject order = ja.getJSONObject(i);
 
                         int getMsgId = Integer.parseInt(order.get("Msg_id").toString());
-                        int getChatroomId = Integer.parseInt(order.get("Id").toString());
+                        int mGetChatroomId = Integer.parseInt(order.get("Id").toString());
                         int getSendId = Integer.parseInt(order.get("Send_id").toString());
                         /*if (!String.valueOf(getSendId).equals(mPref.getValue("user_num", ""))) {
                             mGetSendId = getSendId;
@@ -215,7 +216,7 @@ public class ChatActivity extends AppCompatActivity {
 
                         Log.e("chatListJson", order.toString());
 
-                        mChatMessages.add(new ChatMessage(getMsgId,getChatroomId, getSendId, getSenderName, getMsg,getTime));
+                        mChatMessages.add(new ChatMessage(getMsgId,mGetChatroomId, getSendId, getSenderName, getMsg,getTime));
                         //메세지에 대한 내용 ArrayList에 저장
                     }
 
@@ -267,7 +268,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
             QueryMessageThread qeury = new QueryMessageThread();
-            qeury.execute(SERVER_URL_QUERY, mGetChatRoomId,mPref.getValue("auth",""));
+            qeury.execute(SERVER_URL_QUERY,String.valueOf(mGetSendId),mPref.getValue("auth",""));
             //메세지 보낸 뒤 대화내용 최신화를 위해 메세지 내용 검색 쓰레드 호출
         }
 
@@ -344,7 +345,7 @@ public class ChatActivity extends AppCompatActivity {
                     JSONObject responseJSON = new JSONObject(response);
                     //JSONObject를 생성해 key값 설정으로 result값을 받음.
                     Log.e("Response ID Value", responseJSON.get("chat_id").toString());
-                    mGetChatRoomId = responseJSON.get("chat_id").toString();
+                    mGetChatRoomId = Integer.parseInt(responseJSON.get("chat_id").toString());
                     //Toast.makeText(this, "Your id value : : " + result, Toast.LENGTH_SHORT);
                     Log.i("responese value", "DATA response = " + mGetChatRoomId);
 
