@@ -54,9 +54,15 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        chat_listview = (ListView) findViewById(R.id.chat_listview);
+        message_edt = (EditText) findViewById(R.id.chat_message_edt);
+        send_btn = (Button) findViewById(R.id.chat_sendbutton);
+
+        mChatMessages = new ArrayList<>();
+        init();
         //receiver 등록
         this.registerReceiver(this.appendChatScreenMsgReceiver, new IntentFilter("appendChatScreenMsg"));
-        init();
+
     }
 
     @Override
@@ -78,11 +84,6 @@ public class ChatActivity extends AppCompatActivity {
     };
 
     private void init() {
-        chat_listview = (ListView) findViewById(R.id.chat_listview);
-        message_edt = (EditText) findViewById(R.id.chat_message_edt);
-        send_btn = (Button) findViewById(R.id.chat_sendbutton);
-
-        mChatMessages = new ArrayList<>();
 
 
         /*
@@ -156,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
             loading.dismiss();
 
 
-            QueryMessageThread qeury = new QueryMessageThread(getApplicationContext(), chat_listview);
+            QueryMessageThread qeury = new QueryMessageThread(mContext, chat_listview);
             qeury.execute(SERVER_URL_QUERY,String.valueOf(mGetChatRoomId),mPref.getValue("auth",""));
             //메세지 보낸 뒤 대화내용 최신화를 위해 메세지 내용 검색 쓰레드 호출
         }

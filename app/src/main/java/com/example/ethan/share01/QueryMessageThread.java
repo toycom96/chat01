@@ -35,7 +35,7 @@ public class QueryMessageThread extends AsyncTask<String, Void, Void> {
         //this.mAdapter = adapter;
         //this.mChatMessages = chatMessages;
         this.mContext = context;
-        this.chat_listview = (ListView) ((Activity)mContext).findViewById(R.id.chat_listview);
+        this.chat_listview = listview;
 
         mChatMessages = new ArrayList<>();
     }
