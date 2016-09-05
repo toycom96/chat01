@@ -3,7 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-
+    dexOptions {
+        javaMaxHeapSize "4g" //specify the heap size for the dex process
+    }
     defaultConfig {
         applicationId "com.example.ethan.share01"
         minSdkVersion 15
@@ -31,5 +33,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'org.apache.httpcomponents:httpmime:4.2.3'
     compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.google.android.gms:play-services:9.2.1'
+    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.android.support:multidex:1.0.1'
 }
