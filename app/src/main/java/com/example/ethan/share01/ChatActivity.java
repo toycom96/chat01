@@ -66,6 +66,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        QueryMessageThread query = new QueryMessageThread(mContext, chat_listview);
+        query.execute(SERVER_URL_QUERY, String.valueOf(mGetChatRoomId), mPref.getValue("auth", ""));
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(appendChatScreenMsgReceiver);
@@ -76,9 +83,10 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle b = intent.getExtras();
-            if (b != null) {
+            String RoomId = b.getString("Room_id");
+            if (b != null && RoomId.equals(String.valueOf(mGetChatRoomId))) {
                 QueryMessageThread query = new QueryMessageThread(mContext, chat_listview);
-                query.execute(SERVER_URL_QUERY, "263", mPref.getValue("auth", ""));
+                query.execute(SERVER_URL_QUERY, String.valueOf(mGetChatRoomId), mPref.getValue("auth", ""));
             }
         }
     };
@@ -117,7 +125,6 @@ public class ChatActivity extends AppCompatActivity {
                 send.execute(SERVER_URL_SEND,String.valueOf(mGetSendId),messageText,auth);
             }
         });
-
 
     }
 

@@ -1,6 +1,7 @@
 package com.example.ethan.share01;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,8 +30,13 @@ public class GCMIntentService extends IntentService {
     // web server 에서 받을 extra key (web server 와 동일해야 함)
     static final String TITLE_EXTRA_KEY = "Title";
     static final String MSG_EXTRA_KEY = "Msg";
-    static final String TYPE_EXTRA_CODE = "Type";
+    static final String TYPE_EXTRA_KEY = "Type";
+    static final String OPT1_EXTRA_KEY = "Opt1";
+    static final String OPT2_EXTRA_KEY = "Opt2";
     // web server 에서 받을 extras key
+
+    //private RbPreference mPref = new RbPreference(GCMIntentService.this);
+    private int mSoundFlag = 0;
 
     public GCMIntentService() {
         super("");
@@ -64,8 +70,8 @@ public class GCMIntentService extends IntentService {
 
                 // Post notification of received message.
                 System.out.println("************************************************* 상태바 알림 호출");
-                sendNotification(extras);
                 refreshChat(extras);
+                sendNotification(extras);
                 System.out.println("************************************************* Received toString : " + extras.toString());
             }
         }
@@ -75,7 +81,8 @@ public class GCMIntentService extends IntentService {
     }
 
     private void refreshChat(Bundle extras) {
-
+        String PosStr;
+        String RoomId;
         /*
          * 채팅방을 refresh 할 것인지에 대해 체크하는 함수
          *
@@ -90,16 +97,49 @@ public class GCMIntentService extends IntentService {
 
         }*/
 
-        Intent i = new Intent();
-        i.setAction("appendChatScreenMsg");
-        i.putExtra("Msg", extras.getString(MSG_EXTRA_KEY));
-        this.sendBroadcast(i);
+        mSoundFlag = 1;
+        if (getRunActivity() == 1) {
+            Intent i = new Intent();
+            i.setAction("appendChatScreenMsg");
+            i.putExtra("Msg", extras.getString(MSG_EXTRA_KEY));
+            i.putExtra("Name", extras.getString(OPT1_EXTRA_KEY));
+            i.putExtra("Room_id", extras.getString(OPT2_EXTRA_KEY));
+
+            this.sendBroadcast(i);
+            mSoundFlag = 0;
+        } else if (getRunActivity() == 2) {
+            Intent i = new Intent();
+            i.setAction("refreshChatRoomList");
+            this.sendBroadcast(i);
+            mSoundFlag = 1;
+        } else {
+            mSoundFlag = 1;
+        }
+    }
+
+    int getRunActivity()	{
+
+        ActivityManager activity_manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> task_info = activity_manager.getRunningTasks(9999);
+
+        //String className = task_info.get(task_info.size()-1).topActivity.getClassName();
+        String className = task_info.get(0).topActivity.getClassName();
+
+        if(className.equals("com.example.ethan.share01.ChatActivity")) {
+            return 1;
+        } else if(className.equals("com.example.ethan.share01.ChatListActivity")) {
+            return 2;
+        } else {
+            return 0;
+        }
 
     }
+
+
     // 상태바에 공지
     private void sendNotification(Bundle extras) {
         // 혹시 모를 사용가능한 코드
-        String typeCode = extras.getString(TYPE_EXTRA_CODE);
+        String typeCode = extras.getString(TYPE_EXTRA_KEY);
         PendingIntent contentIntent;
 
 
@@ -130,7 +170,9 @@ public class GCMIntentService extends IntentService {
         }
 
         //mBuilder.setVibrate(new long[]{0,3000}); // 진동 효과 (퍼미션 필요)
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+        if (mSoundFlag == 1) {
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+        }
         mBuilder.setAutoCancel(true); // 클릭하면 삭제
 
         mBuilder.setContentIntent(contentIntent);

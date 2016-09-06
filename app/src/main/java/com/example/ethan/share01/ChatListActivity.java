@@ -1,7 +1,10 @@
 package com.example.ethan.share01;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ethan.share01.adapter.ChattingRoomAdapter;
 import com.example.ethan.share01.model.ChattingRoom;
@@ -35,6 +39,7 @@ public class ChatListActivity extends AppCompatActivity {
     private ChattingRoomAdapter mChatListAdapter;
     private ListView chatting_room_lv;
     private ArrayList<ChattingRoom> mChatRooms = null;
+    //public Context mContext = ChatListActivity.this;
 
     private TextView recv_id_tv;
     private TextView msg_tv;
@@ -62,6 +67,30 @@ public class ChatListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_list);
         Log.e("ChatListActivity", "ChatListActivity");
         init();
+
+
+        this.registerReceiver(this.refreshChatRoomListReceiver, new IntentFilter("refreshChatRoomList"));
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(refreshChatRoomListReceiver);
+    }
+
+    //GcmBroadcastReceiver에서 보내는걸 받는 receiver
+    BroadcastReceiver refreshChatRoomListReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ChatListLoadThread chatlist = new ChatListLoadThread();
+            chatlist.execute(SERVER_URL, mPref.getValue("auth", ""));
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ChatListLoadThread chatlist = new ChatListLoadThread();
+        chatlist.execute(SERVER_URL, mPref.getValue("auth", ""));
     }
 
     private void init(){
@@ -202,6 +231,7 @@ public class ChatListActivity extends AppCompatActivity {
                         Log.e("ChatListNull", response.toString());
                         return null;
                     }
+                    mChatRooms.clear();
 
                     JSONArray ja = new JSONArray(response);
                     for (int i = 0; i < ja.length(); i++) {
