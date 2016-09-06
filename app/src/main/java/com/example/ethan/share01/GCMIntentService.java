@@ -1,5 +1,6 @@
 package com.example.ethan.share01;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -60,6 +65,7 @@ public class GCMIntentService extends IntentService {
                 // Post notification of received message.
                 System.out.println("************************************************* 상태바 알림 호출");
                 sendNotification(extras);
+                refreshChat(extras);
                 System.out.println("************************************************* Received toString : " + extras.toString());
             }
         }
@@ -68,6 +74,28 @@ public class GCMIntentService extends IntentService {
 
     }
 
+    private void refreshChat(Bundle extras) {
+
+        /*
+         * 채팅방을 refresh 할 것인지에 대해 체크하는 함수
+         *
+         * chatRoom_id값도 추가 되면 id값을 intent로 넘겨준다.
+         * intent를 activity에서 받은 뒤 자신의 현재 위치와 비교한 뒤
+         * 동일한 chatroom일 경우 refresh 한다.
+         *
+         */
+
+
+        /*if (extras.getString(MSG_EXTRA_KEY).equals("hi")) {
+
+        }*/
+
+        Intent i = new Intent();
+        i.setAction("appendChatScreenMsg");
+        i.putExtra("Msg", extras.getString(MSG_EXTRA_KEY));
+        this.sendBroadcast(i);
+
+    }
     // 상태바에 공지
     private void sendNotification(Bundle extras) {
         // 혹시 모를 사용가능한 코드
@@ -86,6 +114,7 @@ public class GCMIntentService extends IntentService {
             contentIntent = PendingIntent.getActivity(this, 0,
                     new Intent(this, MainActivity.class), 0);
         }
+
 
         NotificationCompat.Builder mBuilder =
                 null;
