@@ -2,8 +2,11 @@ package com.example.ethan.share01;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     private int BOTTOM_CASEVAL2 = 2;
 
     public RbPreference mPref = new RbPreference(MainActivity.this);
+    public TextView mChatListNewBadge;
+    public TextView mMainNewBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,7 @@ public class MainActivity extends AppCompatActivity
             GcmRegThread GcmRegObj = new GcmRegThread();
             GcmRegObj.start();
         }
+        this.registerReceiver(this.mainActivityNewBadgeReceiver, new IntentFilter("mainActivityNewBadge"));
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -103,11 +109,37 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            /*@Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+                Log.e("~~ toolbar : ", "close");
+            }*/
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+
+                super.onDrawerOpened(drawerView);
+                if (Integer.parseInt(mPref.getValue("badge_chatcnt", "").toString()) > 0) {
+                    mChatListNewBadge = (TextView) findViewById(R.id.chatlist_badge);
+                    mChatListNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
+                }
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        /*//Setting the actionbarToggle to drawer layout
+        drawer.setDrawerListener(actionBarDrawerToggle);
+        //calling sync state is necessay or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();*/
+
+
+
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -154,6 +186,18 @@ public class MainActivity extends AppCompatActivity
         //회원가입 유무 확인
         checkForLogin();
     }
+
+    BroadcastReceiver mainActivityNewBadgeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Integer.parseInt(mPref.getValue("badge_chatcnt", "").toString()) > 0) {
+                mMainNewBadge = (TextView) findViewById(R.id.main_badge);
+                mMainNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
+                mChatListNewBadge = (TextView) findViewById(R.id.chatlist_badge);
+                mChatListNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
+            }
+        }
+    };
 
     private void userSettingDialog(){
         /*
@@ -257,6 +301,23 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (hasFocus == true) {
+            if (Integer.parseInt(mPref.getValue("badge_chatcnt", "").toString()) > 0) {
+                mMainNewBadge = (TextView) findViewById(R.id.main_badge);
+                mMainNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(mainActivityNewBadgeReceiver);
+    }
 
     private void openBottomSheet(int titleVal, int cateVal1, int cateVal2, final int caseVal){
         Log.e("openBottomSheet", "Open");

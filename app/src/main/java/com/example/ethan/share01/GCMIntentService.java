@@ -111,6 +111,10 @@ public class GCMIntentService extends IntentService {
             Intent i = new Intent();
             i.setAction("refreshChatRoomList");
             this.sendBroadcast(i);
+
+            Intent i2 = new Intent();
+            i2.setAction("mainActivityNewBadge");
+            this.sendBroadcast(i2);
             mSoundFlag = 1;
         } else {
             mSoundFlag = 1;
