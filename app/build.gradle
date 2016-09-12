@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     dexOptions {
-        javaMaxHeapSize "4g" //specify the heap size for the dex process
+        //javaMaxHeapSize "4g" //specify the heap size for the dex process
     }
     defaultConfig {
         applicationId "com.example.ethan.share01"
