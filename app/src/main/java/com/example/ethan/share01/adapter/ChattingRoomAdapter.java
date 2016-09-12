@@ -69,7 +69,7 @@ public class ChattingRoomAdapter extends BaseAdapter {
             Picasso.with(mContext).load(item.getPhoto()).resize(72, 72).into(photo);
         }
         if (item.getBadgeCnt() > 0) {
-            badge.setBackgroundResource(R.drawable.ic_badge_check);
+            badge.setBackgroundResource(R.drawable.ic_badge_new);
 
         //} else {
         //    badge.setBackground("");

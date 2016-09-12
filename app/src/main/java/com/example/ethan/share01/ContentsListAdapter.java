@@ -116,6 +116,14 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
             Msg = (TextView) ContentView.findViewById(R.id.bbslist_msg);
             ContentId = 0;
             UserId = 0;
+
+            Photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //여기에 사진 키우는거 처리
+                    Log.e("~~~~Click : ", "Photo");
+                }
+            });
         }
 
         @Override
