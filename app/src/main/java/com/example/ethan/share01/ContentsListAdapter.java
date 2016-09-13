@@ -29,6 +29,7 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
     private List<ContentsListObject> ContentsList;
     private Context mContext;
     static int picWidth = 470;
+    private String photo_path;
 
     public ContentsListAdapter(Context context, List<ContentsListObject> ContentItem) {
         this.mContext = context;
@@ -43,7 +44,7 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
     }
 
     @Override
-    public void onBindViewHolder(ContentsListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ContentsListAdapter.ViewHolder holder, final int position) {
         int unix_sec = 0;
         String getTime;
 
@@ -51,6 +52,7 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
         //Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(476,0).into(holder.Pic);
         if (ContentsList.get(position).getPicUrl() != null && !ContentsList.get(position).getPicUrl().equals("")) {
             Toast.makeText(mContext, ContentsList.get(position).getPicUrl(), Toast.LENGTH_SHORT);
+            photo_path = ContentsList.get(position).getPicUrl();
             Picasso.with(mContext).load(ContentsList.get(position).getPicUrl()).resize(picWidth, 0).into(holder.Photo);
         } else {
             holder.Photo.setMaxWidth(0);
@@ -82,6 +84,15 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
             holder.Etc.setText("여 " + String.valueOf(ContentsList.get(position).getAge()) + "세  " + String.valueOf(ContentsList.get(position).getDist()) + " km 이내");
         }
 
+        holder.Photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("~~~~Click : ", "Photo");
+                Intent intent = new Intent(mContext, PictureDetailViewActivity.class);
+                intent.putExtra("photo_path", ContentsList.get(position).getPicUrl());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -117,13 +128,15 @@ public class ContentsListAdapter  extends RecyclerView.Adapter<ContentsListAdapt
             ContentId = 0;
             UserId = 0;
 
-            Photo.setOnClickListener(new View.OnClickListener() {
+            /*Photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //여기에 사진 키우는거 처리
-                    Log.e("~~~~Click : ", "Photo");
+
+
+
                 }
-            });
+            });*/
         }
 
         @Override
