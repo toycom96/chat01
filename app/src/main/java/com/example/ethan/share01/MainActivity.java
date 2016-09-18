@@ -124,7 +124,10 @@ public class MainActivity extends AppCompatActivity
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
 
                 super.onDrawerOpened(drawerView);
-                if (Integer.parseInt(mPref.getValue("badge_chatcnt", "").toString()) > 0) {
+                String badge_count = mPref.getValue("badge_chatcnt", "");
+                if (badge_count == null || badge_count.equals("")) {
+                    //예외처리
+                } else if (Integer.parseInt(badge_count) > 0) {
                     mChatListNewBadge = (TextView) findViewById(R.id.chatlist_badge);
                     mChatListNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
                 }
@@ -306,7 +309,10 @@ public class MainActivity extends AppCompatActivity
         super.onWindowFocusChanged(hasFocus);
 
         if (hasFocus == true) {
-            if (Integer.parseInt(mPref.getValue("badge_chatcnt", "").toString()) > 0) {
+            String badge_count = mPref.getValue("badge_chatcnt","");
+            if (badge_count == null || badge_count.equals("")) {
+                //예외처리
+            } else if (Integer.parseInt(badge_count) > 0) {
                 mMainNewBadge = (TextView) findViewById(R.id.main_badge);
                 mMainNewBadge.setBackgroundResource(R.drawable.ic_badge_new);
             }
